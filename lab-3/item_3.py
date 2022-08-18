@@ -31,6 +31,19 @@ def checkprio(e):
     if e in "^":
         return 3
 
+def get_close_brace_index(l, i):
+    stack = Stack()
+    stack.push(l[i])
+    i += 1
+    while True:
+        if l[i] == "(":
+            stack.push(l[i])
+        elif l[i] == ")":
+            stack.pop()
+            if stack.isEmpty():
+                return i
+        i += 1
+
 def postfix(l):
     stack = Stack()
     ans = []
@@ -48,7 +61,8 @@ def postfix(l):
                     break
             stack.push(e)
         elif e in "(":
-            ip = l[i+1:l.rfind(")")]
+            b_i = get_close_brace_index(l, i)
+            ip = l[i+1:b_i]
             ans.append(postfix(ip))
             i += len(ip)+1
         else:
