@@ -1,7 +1,7 @@
 def process_candy(candy):
     item = []
+    explosion = 0
     last = -1
-    exp = 0
     while True:
         old_candy = candy.copy()
         for i in range(len(candy)):
@@ -23,11 +23,11 @@ def process_candy(candy):
                 left = candy[0:i]
                 right = candy[i+3:]
                 candy = left+right
-                exp += 1
+                explosion += 1
                 break
         if candy == old_candy:
             break
-    return candy, item, exp
+    return candy, item, explosion
 
 def use_item(candy, item):
     failed = 0
