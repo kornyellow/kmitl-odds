@@ -23,6 +23,7 @@ class Stack:
     def __str__(self):
         return "".join(self.items)
 
+
 def checkprio(e):
     if e in "+-":
         return 1
@@ -72,5 +73,9 @@ def postfix(l):
         ans.append(stack.pop())
     return "".join(ans)
 
-ip = input("Enter Infix : ")
-print("Postfix", ":", postfix(ip))
+def main():
+    ip = input("Enter Infix : ")
+    print("Postfix", ":", postfix(ip))
+
+if __name__ == "__main__":
+    main()

@@ -1,83 +1,145 @@
-def process_candy(candy):
-    item = []
+class Queue:
+    def __init__(self, lst=None):
+        self.items = lst
+        if lst == None:
+            self.items = []
+
+    def __str__(self):
+        if self.is_empty():
+            return "Empty"
+        x = self.items.copy()
+        x.reverse()
+        return "".join(x)
+
+    def reverse(self):
+        if self.is_empty():
+            return "ytpmE"
+        return "".join(self.items)
+
+    def enqueue(self, e):
+        self.items.append(e)
+
+    def dequeue(self):
+        return self.items.pop(0)
+
+    def first(self):
+        if not self.is_empty():
+            return self.items[0]
+
+    def clear(self):
+        self.items = []
+
+    def size(self):
+        return len(self.items)
+
+    def is_empty(self):
+        return self.size() == 0
+
+
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def push(self, e):
+        self.items.append(e)
+
+    def pop(self):
+        return self.items.pop()
+
+    def peek(self):
+        return self.items[0]
+
+    def size(self):
+        return len(self.items)
+
+    def is_empty(self):
+        return self.size() == 0
+
+
+def process_candy(candy_queue):
+    item = Stack()
     explosion = 0
-    last = -1
+
+    queue_1 = Queue()
+    queue_2 = Queue()
+
+    old_candy = candy_queue.items.copy()
     while True:
-        old_candy = candy.copy()
-        for i in range(len(candy)):
-            piece = candy[i]
-            matches = 1
-            for j in range(1, 3):
-                if i+j >= len(candy):
-                    break
-                elif candy[i+j] != piece:
-                    break
-                else:
-                    matches += 1
-            if matches == 3:
-                if i < last:
-                    item.insert(0, piece)
-                else:
-                    item.append(piece)
-                last = i
-                left = candy[0:i]
-                right = candy[i+3:]
-                candy = left+right
-                explosion += 1
-                break
-        if candy == old_candy:
+        if candy_queue.is_empty() and queue_1.is_empty() and queue_2.is_empty():
             break
-    return candy, item, explosion
-
-def use_item(candy, item):
-    failed = 0
-    i = 0
-    while i < len(candy):
-        piece = candy[i]
-        matches = 1
-        for j in range(1, 3):
-            if i+j >= len(candy):
+        elif candy_queue.is_empty() and queue_1.is_empty():
+            while not queue_2.is_empty():
+                candy_queue.enqueue(queue_2.dequeue())
+            if candy_queue.items == old_candy:
                 break
-            elif candy[i+j] != piece:
-                break
+            old_candy = candy_queue.items.copy()
+        else:
+            if not queue_1.is_empty() and queue_1.first() != candy_queue.first():
+                while not queue_1.is_empty():
+                    queue_2.enqueue(queue_1.dequeue())
             else:
-                matches += 1
-        if matches == 3 and len(item) != 0:
-            a = item.pop()
-            candy.insert(i+2, a)
-            i += 2
-            if a == piece:
+                c = candy_queue.dequeue()
+                queue_1.enqueue(c)
+                if queue_1.size() == 3:
+                    queue_1.clear()
+                    item.push(c)
+                    explosion += 1
+
+    return item, explosion
+
+def use_item(candy_queue, item_stack):
+    failed = 0
+
+    queue_1 = Queue()
+    queue_2 = Queue()
+    while not item_stack.is_empty():
+        if queue_1.size() == 2 and queue_1.first() == candy_queue.first():
+            item = item_stack.pop()
+            queue_1.enqueue(item)
+            if item == queue_1.first():
                 failed += 1
-        elif len(item) == 0:
+            queue_1.enqueue(candy_queue.dequeue())
+            while not queue_1.is_empty():
+                queue_2.enqueue(queue_1.dequeue())
+        if queue_1.first() != candy_queue.first():
+            while not queue_1.is_empty():
+                queue_2.enqueue(queue_1.dequeue())
+        if candy_queue.is_empty():
             break
-        i += 1
-    return candy, failed
+        queue_1.enqueue(candy_queue.dequeue())
 
-normal, mirror = input("Enter Input (Normal, Mirror) : ").split(" ")
-normal = [*normal]
-mirror = [*mirror]
+    while not queue_1.is_empty():
+        queue_2.enqueue(queue_1.dequeue())
+    while not candy_queue.is_empty():
+        queue_2.enqueue(candy_queue.dequeue())
+    while not queue_2.is_empty():
+        candy_queue.enqueue(queue_2.dequeue())
 
-mirror, mirror_item, mirror_exp = process_candy(mirror)
-normal, failed = use_item(normal, mirror_item)
-normal, normal_item, normal_exp = process_candy(normal)
-normal.reverse()
+    return failed
 
-print("NORMAL :")
-print(len(normal))
-if len(normal) == 0:
-    print("Empty")
-else:
-    print("".join(normal))
-print(normal_exp-failed, "Explosive(s) ! ! ! (NORMAL)")
-if failed > 0:
-    print("Failed Interrupted %d Bomb(s)" % (failed))
+def main():
+    normal, mirror = tuple(input("Enter Input (Normal, Mirror) : ").split())
 
-print("------------MIRROR------------")
+    normal_queue = Queue([*normal])
+    mirror_queue = Queue([*mirror])
 
-print(": RORRIM")
-print(len(mirror))
-if len(mirror) == 0:
-    print("ytpmE")
-else:
-    print("".join(mirror))
-print("(RORRIM) ! ! ! (s)evisolpxE", mirror_exp)
+    mirror_item, mirror_exp = process_candy(mirror_queue)
+    failed = use_item(normal_queue, mirror_item)
+    _, normal_exp = process_candy(normal_queue)
+
+    print("NORMAL :")
+    print(normal_queue.size())
+    print(normal_queue)
+    print(normal_exp-failed, "Explosive(s) ! ! ! (NORMAL)")
+
+    if failed > 0:
+        print("Failed Interrupted %d Bomb(s)" % (failed))
+
+    print("------------MIRROR------------")
+    print(": RORRIM")
+    print(mirror_queue.size())
+    print(mirror_queue.reverse())
+    print("(RORRIM) ! ! ! (s)evisolpxE", mirror_exp)
+
+if __name__ == "__main__":
+    main()

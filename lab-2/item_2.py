@@ -15,11 +15,15 @@ class Spherical:
         ret += " Area = " + str(self.findArea())
         return ret
 
-r1, r2 = input("Enter R : ").split()
-R1 = Spherical(int(r1))
-print(type(R1))
-print(dir(R1))
-print(R1)
-R1.changeR(int(r2))
-print(R1)
 
+def main():
+    r1, r2 = input("Enter R : ").split()
+    R1 = Spherical(int(r1))
+    print(type(R1))
+    print(dir(R1))
+    print(R1)
+    R1.changeR(int(r2))
+    print(R1)
+
+if __name__ == "__main__":
+    main()

@@ -14,6 +14,11 @@ class Calculator:
     def __truediv__(self, other):
         return self.val / other.val
 
-x,y = input("Enter num1 num2 : ").split(",")
-x,y = Calculator(int(x)), Calculator(int(y))
-print(x+y, x-y, x*y, x/y, sep="\n")
+
+def main():
+    x,y = input("Enter num1 num2 : ").split(",")
+    x,y = Calculator(int(x)), Calculator(int(y))
+    print(x+y, x-y, x*y, x/y, sep="\n")
+
+if __name__ == "__main__":
+    main()

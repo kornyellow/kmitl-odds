@@ -13,6 +13,9 @@ def bon(w):
     v = (ord(k_max)-ord('a')+1)*2
     return v*2
 
-code = input("Enter secret code : ")
-print(bon(code))
+def main():
+    code = input("Enter secret code : ")
+    print(bon(code))
 
+if __name__ == "__main__":
+    main()

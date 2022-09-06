@@ -1,36 +1,43 @@
 class Queue:
-    def __init__(self, l=None):
-        if l != None:
-            self.items = l
-        else:
-            self.items = []
+    def __init__(self):
+        self.items = []
 
     def enqueue(self, e):
         self.items.append(e)
-        return len(self.items)
 
     def dequeue(self):
-        if len(self.items) == 0:
-            return -1, -1
-        e = self.items.pop(0)
-        return e, 0
+        if self.is_empty():
+            return -1
+        return self.items.pop(0)
+
+    def size(self):
+        return len(self.items)
+
+    def is_empty(self):
+        return self.size() == 0
 
     def __str__(self):
         if len(self.items) == 0:
             return "Empty"
         return " ".join(list(map(str, self.items)))
 
-ip = input("Enter Input : ").split(",")
 
-queue = Queue()
-for l in ip:
-    if l == "D":
-        e, i = queue.dequeue()
-        if e != -1:
-            print(e, i)
+def main():
+    inp = input("Enter Input : ").split(",")
+
+    queue = Queue()
+    for e in inp:
+        if e == "D":
+            e = queue.dequeue()
+            if e != -1:
+                print(e, 0)
+            else:
+                print(-1)
         else:
-            print(-1)
-    else:
-        e = int(l.split(" ")[1])
-        print(queue.enqueue(e))
-print(queue)
+            a = e.split()[1]
+            queue.enqueue(a)
+            print(queue.size())
+    print(queue)
+
+if __name__ == "__main__":
+    main()
