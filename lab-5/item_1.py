@@ -61,7 +61,6 @@ class LinkedList:
     def is_empty(self):
         return self.size == 0
 
-
 def main():
     ip = input("Enter Input : ").split(",")
     raw_list = ip[0].split()
